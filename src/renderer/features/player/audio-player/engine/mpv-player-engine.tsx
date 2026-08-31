@@ -10,6 +10,7 @@ import { AudioPlayer, PlayerOnProgressProps } from '/@/renderer/features/player/
 import { useRadioStore } from '/@/renderer/features/radio/hooks/use-radio-player';
 import { getMpvProperties } from '/@/renderer/features/settings/components/playback/mpv-properties';
 import {
+    setMpvInitialized,
     usePlaybackSettings,
     usePlayerActions,
     usePlayerSong,
@@ -67,6 +68,7 @@ export const MpvPlayerEngine = (props: MpvPlayerEngineProps) => {
     useEffect(() => {
         const handleMpvReload = () => {
             setIsInitialized(false);
+            setMpvInitialized(false);
             setReloadTrigger((prev) => prev + 1);
         };
 
@@ -89,6 +91,7 @@ export const MpvPlayerEngine = (props: MpvPlayerEngineProps) => {
     useEffect(() => {
         isMountedRef.current = true;
         setIsInitialized(false);
+        setMpvInitialized(false);
         let isCancelled = false;
 
         const initializeMpv = async () => {
@@ -162,6 +165,7 @@ export const MpvPlayerEngine = (props: MpvPlayerEngineProps) => {
 
             if (!isCancelled) {
                 setIsInitialized(true);
+                setMpvInitialized(true);
             }
         };
 
@@ -173,6 +177,7 @@ export const MpvPlayerEngine = (props: MpvPlayerEngineProps) => {
             // Quit mpv on unmount
             mpvPlayer?.quit();
             setIsInitialized(false);
+            setMpvInitialized(false);
             hasPopulatedQueueRef.current = false;
         };
         // Note: volume, speed, preservePitch, and transcode are intentionally not in dependencies.
