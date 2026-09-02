@@ -11,6 +11,7 @@ import { useRadioStore } from '/@/renderer/features/radio/hooks/use-radio-player
 import { getMpvProperties } from '/@/renderer/features/settings/components/playback/mpv-properties';
 import {
     setMpvInitialized,
+    useMpvInitialized,
     usePlaybackSettings,
     usePlayerActions,
     usePlayerSong,
@@ -53,7 +54,7 @@ export const MpvPlayerEngine = (props: MpvPlayerEngineProps) => {
     } = props;
 
     const [internalVolume, setInternalVolume] = useState(volume / 100 || 0);
-    const [isInitialized, setIsInitialized] = useState(false);
+    const isInitialized = useMpvInitialized();
     const currentSong = usePlayerSong();
 
     const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -67,7 +68,6 @@ export const MpvPlayerEngine = (props: MpvPlayerEngineProps) => {
 
     useEffect(() => {
         const handleMpvReload = () => {
-            setIsInitialized(false);
             setMpvInitialized(false);
             setReloadTrigger((prev) => prev + 1);
         };
@@ -90,7 +90,6 @@ export const MpvPlayerEngine = (props: MpvPlayerEngineProps) => {
     // Start the mpv instance on startup
     useEffect(() => {
         isMountedRef.current = true;
-        setIsInitialized(false);
         setMpvInitialized(false);
         let isCancelled = false;
 
@@ -164,7 +163,6 @@ export const MpvPlayerEngine = (props: MpvPlayerEngineProps) => {
             }
 
             if (!isCancelled) {
-                setIsInitialized(true);
                 setMpvInitialized(true);
             }
         };
@@ -176,7 +174,6 @@ export const MpvPlayerEngine = (props: MpvPlayerEngineProps) => {
             isMountedRef.current = false;
             // Quit mpv on unmount
             mpvPlayer?.quit();
-            setIsInitialized(false);
             setMpvInitialized(false);
             hasPopulatedQueueRef.current = false;
         };
